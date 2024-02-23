@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import Main from "./components/main/main";
+import Header from "./components/header/header";
+import Aside from "./components/aside/aside";
+import AddModalDialog from "./components/add-modal-dialog/add-modal-dialog";
+import MiniModalDialog from "./components/mini-modal-dialog/mini-modal-dialog";
+import { useState } from "react";
+// import styled from "styled-components";
 
 function App() {
+  const [showModalState, setShowModalState] = useState(false);
+  const [showMiniModalState, setShowMiniModalState] = useState(false)
+
+  const onToggleShowModal = () => {
+    setShowModalState(!showModalState);
+  };
+  const onToggleShowMiniModal = () => {
+    setShowMiniModalState(!showMiniModalState);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header onToggleShow={onToggleShowModal} />
+      {showModalState ? <AddModalDialog onToggleShow={onToggleShowModal} /> : null}
+      <Aside />
+      <Main onToggleShowMini={onToggleShowMiniModal} />
+      {showMiniModalState ? <MiniModalDialog/> : null}
+    </>
   );
 }
 
