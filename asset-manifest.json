@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/FozynS/Todo-List/static/css/main.182100a5.css",
+    "main.js": "/FozynS/Todo-List/static/js/main.cedccbd8.js",
+    "index.html": "/FozynS/Todo-List/index.html",
+    "main.182100a5.css.map": "/FozynS/Todo-List/static/css/main.182100a5.css.map",
+    "main.cedccbd8.js.map": "/FozynS/Todo-List/static/js/main.cedccbd8.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.182100a5.css",
+    "static/js/main.cedccbd8.js"
+  ]
+}
