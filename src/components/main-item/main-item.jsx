@@ -3,6 +3,7 @@ import styled from "styled-components";
 import TopicsContext from "../TopicsContext/TopicsContext";
 
 const Note = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -78,31 +79,12 @@ const StyledDiv = styled.div`
   margin-left: 5px;
 `;
 
-const noteItems = [
-  {
-    title: "The first task title",
-    description:
-      "Lorem ipsum. dolor sit amet, consectetur adipisicing elit. Illum neque nisi dolore facere iste minima atque veniam excepturi aut consequatur dolorum veritatis error nemo id placeat, minus odio delectus eius.",
-    topics: ["work", "study", "entartaiment"],
-  },
-  {
-    title: "The second task title",
-    description:
-      "Lorem ipsum. dolor sit amet, consectetur adipisicing elit. Illum neque nisi dolore facere iste minima atque veniam excepturi aut consequatur dolorum veritatis error nemo id placeat, minus odio delectus eius. Lorem ipsum. dolor sit amet consectetur adipisicing elit.",
 
-    topics: [],
-  },
-  {
-    title: "The third task title",
-    description:
-      "Illum neque nisi dolore facere iste minima atque veniam excepturi aut consequatur dolorum veritatis error nemo id placeat, minus odio delectus eius.",
-    topics: ["study", "family"],
-  },
-];
+function MainItem({ onToggleShowMini, noteItems }) {
 
-function MainItem({ onToggleShowMini }) {
-  const [doneStates, setDoneState] = useState(noteItems.map(() => false));
   const topics = useContext(TopicsContext);
+  const [doneStates, setDoneState] = useState(noteItems.map(() => false));
+  const [openedIndex, setOpenedIndex] = useState(null);
 
   const toggleDone = (index) => {
     setDoneState((prevStates) => {
@@ -118,7 +100,7 @@ function MainItem({ onToggleShowMini }) {
         <Note key={index}>
           <Title>
             <H2 $done={doneStates[index]}>{item.title}</H2>
-            <DivMore onClick={onToggleShowMini}>
+            <DivMore onClick={() => onToggleShowMini(index)}>
               <Span>...</Span>
             </DivMore>
           </Title>

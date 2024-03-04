@@ -40,14 +40,18 @@ const BtnDelete = styled.button`
   border-bottom-right-radius: 10px;
   background-color: #fff;
   color: #cac8bd;
+
+  &:active {
+    transform: scale(0.95);
+  }
 `;
 
-function MiniModalDialog({onToggleShowMini}) {
+function MiniModalDialog({deleteTodo}) {
   return (
     <MiniDialog>
       <BtnEdit>Edit...</BtnEdit>
       <Line />
-      <BtnDelete onClick={onToggleShowMini}>Delete</BtnDelete>
+      <BtnDelete onClick={deleteTodo}>Delete</BtnDelete>
     </MiniDialog>
   );
 }

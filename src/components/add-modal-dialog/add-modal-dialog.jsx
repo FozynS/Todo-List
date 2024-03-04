@@ -111,8 +111,9 @@ const StyledDiv = styled.div`
   margin-left: 5px;
 `;
 
-function ModalDialog({ onToggleShow }) {
-  // const [textState, setTextState] = useState([]);
+function ModalDialog({ onToggleShow, onSubmit }) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
 
   const topics = useContext(TopicsContext);
   const [selectState, setSelectState] = useState({});
@@ -125,8 +126,18 @@ function ModalDialog({ onToggleShow }) {
   };
 
   const addNewNote = () => {
+    const selectedTopics = Object.entries(selectState)
+
+    console.log(selectedTopics);
+
+    const newNote = {
+      title: title,
+      description: description,
+      topics: selectedTopics,
+    };
+
     onToggleShow();
-    
+    onSubmit(newNote);
   };
 
   return (
@@ -138,9 +149,19 @@ function ModalDialog({ onToggleShow }) {
         </BtnsDiv>
         <div>
           <h2>Title</h2>
-          <InputTitle type="text" placeholder="add a title..." />
+          <InputTitle
+            type="text"
+            placeholder="add a title..."
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
           <h2>Description</h2>
-          <InputDescription type="text" placeholder="add a description..." />
+          <InputDescription
+            type="text"
+            placeholder="add a description..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
         </div>
         <div>
           <h2>Tags</h2>

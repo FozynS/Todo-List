@@ -11,10 +11,10 @@ const MainDiv = styled.main`
   gap: 20px;
 `;
 
-function Main({onToggleShowMini}) {
+function Main({onToggleShowMini, noteItems}) {
   return (
     <MainDiv>
-      <MainItem onToggleShowMini={onToggleShowMini}/>
+      <MainItem onToggleShowMini={onToggleShowMini} noteItems={noteItems}/>
     </MainDiv>
   );
 }
