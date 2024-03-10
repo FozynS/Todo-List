@@ -1,6 +1,7 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
-import TopicsContext from "../TopicsContext/TopicsContext";
+import topics from "../Topics/Topics";
+import Popover from "../popoverMenu/popover";
 
 const Note = styled.div`
   position: relative;
@@ -79,32 +80,29 @@ const StyledDiv = styled.div`
   margin-left: 5px;
 `;
 
+function MainItem({ noteItems, onToggle, doneState, handleDeleteTodo }) {
+  const [showPopover, setShowPopover] = useState(false);
 
-function MainItem({ onToggleShowMini, noteItems }) {
-
-  const topics = useContext(TopicsContext);
-  const [doneStates, setDoneState] = useState(noteItems.map(() => false));
-  const [openedIndex, setOpenedIndex] = useState(null);
-
-  const toggleDone = (index) => {
-    setDoneState((prevStates) => {
-      const newStates = [...prevStates];
-      newStates[index] = !newStates[index];
-      return newStates;
-    });
+  const onToggleShowPopover = (index) => {
+    setShowPopover(index === showPopover ? null : index);
   };
+
 
   return (
     <>
       {noteItems.map((item, index) => (
-        <Note key={index}>
+        <Note key={item.id}>
           <Title>
-            <H2 $done={doneStates[index]}>{item.title}</H2>
-            <DivMore onClick={() => onToggleShowMini(index)}>
+            <H2 $done={doneState[index]}>{item.title}</H2>
+            <DivMore onClick={() => onToggleShowPopover(index)}>
               <Span>...</Span>
             </DivMore>
           </Title>
-          <P $done={doneStates[index]}>{item.description}</P>
+          {showPopover === index ? <Popover handleDeleteTodo={() => {
+            handleDeleteTodo(index)
+            setShowPopover(null)
+          }} /> : null}
+          <P $done={doneState[index]}>{item.description}</P>
           <Theme>
             <ColorsTopics>
               {item.topics.map((topic, index) => {
@@ -118,7 +116,7 @@ function MainItem({ onToggleShowMini, noteItems }) {
               })}
             </ColorsTopics>
             <Label>
-              <Checkbox onClick={() => toggleDone(index)} />
+              <Checkbox onClick={() => onToggle(index)} />
               Done
             </Label>
           </Theme>

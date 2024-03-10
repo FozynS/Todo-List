@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import TopicsContext from "../TopicsContext/TopicsContext";
-import { useContext, useState } from "react";
+import topics from "../Topics/Topics";
+import { useState } from "react";
 
 const ShadowDiv = styled.div`
   position: fixed;
@@ -51,12 +51,12 @@ const AddBtn = styled.div`
   font-size: 20px;
   height: 80%;
   width: 13%;
-  background-color: #69665c;
+  background-color: ${({ disabled }) => (disabled ? "#ccc" : "#69665c")};
   border-radius: 15px;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? "not-allowed" : "pointer")};
 
   &:active {
-    transform: scale(0.9);
+    transform: ${({ disabled }) => (disabled ? "none" : "scale(0.9)")};
   }
 `;
 
@@ -64,7 +64,7 @@ const InputTitle = styled.input.attrs({ type: "text" })`
   width: 100%;
   height: 50px;
   background-color: #f5f5f5;
-  border: none;
+  border: ${({ $valid }) => ($valid ? "none" : "2px solid #f78080")};
   border-radius: 5px;
   padding-left: 1em;
   font-size: 16px;
@@ -73,7 +73,7 @@ const InputDescription = styled.input.attrs({ type: "text" })`
   width: 100%;
   height: 100px;
   background-color: #f5f5f5;
-  border: none;
+  border: ${({ $valid }) => ($valid ? "none" : "2px solid #f78080")};
   border-radius: 5px;
   padding-left: 1em;
   font-size: 16px;
@@ -114,30 +114,48 @@ const StyledDiv = styled.div`
 function ModalDialog({ onToggleShow, onSubmit }) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
+  const [selectState, setSelectState] = useState([]);
+  const [isTitleValid, setIsTitleValid] = useState(false);
+  const [isDescriptionValid, setIsDescriptionValid] = useState(false);
+  const [isTopicSelected, setIsTopicSelected] = useState(false);
 
-  const topics = useContext(TopicsContext);
-  const [selectState, setSelectState] = useState({});
+  const handleTitleChange = (e) => {
+    const { value } = e.target;
+    setTitle(value);
+    setIsTitleValid(value.length >= 5);
+  };
 
-  const toggleSelect = (index) => {
-    setSelectState((prevState) => ({
-      ...prevState,
-      [index]: !prevState[index],
-    }));
+  const handleDescriptionChange = (e) => {
+    const { value } = e.target;
+    setDescription(value);
+    setIsDescriptionValid(value.length >= 10);
+  };
+
+  const toggleSelect = (topicName) => {
+    setSelectState((prevState) => {
+      const newState = prevState.includes(topicName)
+        ? prevState.filter((item) => item !== topicName)
+        : prevState.concat(topicName);
+
+      setIsTopicSelected(newState.length > 0);
+      return newState;
+    });
   };
 
   const addNewNote = () => {
-    const selectedTopics = Object.entries(selectState)
+    if (!isTopicSelected) {
+      return null;
+    } else {
+      const newNote = {
+        id: Math.random(),
+        title,
+        description,
+        topics: selectState,
+      };
 
-    console.log(selectedTopics);
-
-    const newNote = {
-      title: title,
-      description: description,
-      topics: selectedTopics,
-    };
-
-    onToggleShow();
-    onSubmit(newNote);
+      onToggleShow();
+      onSubmit(newNote);
+    }
   };
 
   return (
@@ -145,7 +163,14 @@ function ModalDialog({ onToggleShow, onSubmit }) {
       <ModalDiv>
         <BtnsDiv>
           <CancelBtn onClick={onToggleShow}>Cancel</CancelBtn>
-          <AddBtn onClick={addNewNote}>Add</AddBtn>
+          <AddBtn
+            onClick={() =>
+              isTitleValid && isDescriptionValid || !isTopicSelected ? addNewNote() : null
+            }
+            disabled={!isTitleValid || !isDescriptionValid || !isTopicSelected}
+          >
+            Add
+          </AddBtn>
         </BtnsDiv>
         <div>
           <h2>Title</h2>
@@ -153,27 +178,29 @@ function ModalDialog({ onToggleShow, onSubmit }) {
             type="text"
             placeholder="add a title..."
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={handleTitleChange}
+            $valid={isTitleValid}
           />
           <h2>Description</h2>
           <InputDescription
             type="text"
             placeholder="add a description..."
             value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            onChange={handleDescriptionChange}
+            $valid={isDescriptionValid}
           />
         </div>
         <div>
           <h2>Tags</h2>
           <TopicsWrapper>
-            {Object.entries(topics).map(([key, value], index) => (
+            {Object.keys(topics).map((topic) => (
               <Topics
-                key={index}
-                $select={selectState[index] || false}
-                onClick={() => toggleSelect(index)}
+                key={topic}
+                $select={selectState.indexOf(topic) > -1}
+                onClick={() => toggleSelect(topic)}
               >
-                <StyledDiv color={value}></StyledDiv>
-                <p>{key}</p>
+                <StyledDiv color={topics[topic]} />
+                <p>{topic}</p>
               </Topics>
             ))}
           </TopicsWrapper>

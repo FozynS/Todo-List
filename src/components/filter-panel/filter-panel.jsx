@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styled from "styled-components";
 
 const ContainerDiv = styled.div`
@@ -23,15 +22,10 @@ const StyledDiv = styled.div`
   margin-left: 5px;
 `;
 
-function FilterPanel({ text, color }) {
-  const [activeState, setActiveState] = useState(false);
-
-  const toggleActive = () => {
-    setActiveState(!activeState);
-  }
+function FilterPanel({ text, color, onClick, active }) {
 
   return (
-    <ContainerDiv $active={activeState} onClick={toggleActive}>
+    <ContainerDiv $active={active} onClick={onClick}>
       <StyledDiv color={color}></StyledDiv>
       <p>{text}</p>
     </ContainerDiv>

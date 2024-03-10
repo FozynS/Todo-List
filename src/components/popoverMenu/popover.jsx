@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
-const MiniDialog = styled.div`
+const PopoverDiv = styled.div`
   position: absolute;
-  top: 180px;
-  left: 670px;
+  top: 60px;
+  left: 360px;
   display: flex;
   flex-direction: column;
-  width: 10%;
-  height: 12%;
+  width: 30%;
+  height: 40%;
 `;
 const BtnEdit = styled.button`
   cursor: pointer;
@@ -46,14 +46,14 @@ const BtnDelete = styled.button`
   }
 `;
 
-function MiniModalDialog({deleteTodo}) {
+function Popover({ handleDeleteTodo }) {
   return (
-    <MiniDialog>
-      <BtnEdit>Edit...</BtnEdit>
+    <PopoverDiv>
+      {/* <BtnEdit>Edit...</BtnEdit> */}
       <Line />
-      <BtnDelete onClick={deleteTodo}>Delete</BtnDelete>
-    </MiniDialog>
+      <BtnDelete onClick={handleDeleteTodo}>Delete</BtnDelete>
+    </PopoverDiv>
   );
 }
 
-export default MiniModalDialog;
+export default Popover;
