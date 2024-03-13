@@ -69,14 +69,16 @@ const InputTitle = styled.input.attrs({ type: "text" })`
   padding-left: 1em;
   font-size: 16px;
 `;
-const InputDescription = styled.input.attrs({ type: "text" })`
+const InputDescription = styled.textarea`
   width: 100%;
   height: 100px;
   background-color: #f5f5f5;
   border: ${({ $valid }) => ($valid ? "none" : "2px solid #f78080")};
   border-radius: 5px;
   padding-left: 1em;
+  padding-top: 2em;
   font-size: 16px;
+  resize: none;
 `;
 
 const TopicsWrapper = styled.div`
@@ -147,7 +149,6 @@ function ModalDialog({ onToggleShow, onSubmit }) {
       return null;
     } else {
       const newNote = {
-        id: Math.random(),
         title,
         description,
         topics: selectState,
@@ -165,7 +166,9 @@ function ModalDialog({ onToggleShow, onSubmit }) {
           <CancelBtn onClick={onToggleShow}>Cancel</CancelBtn>
           <AddBtn
             onClick={() =>
-              isTitleValid && isDescriptionValid || !isTopicSelected ? addNewNote() : null
+              (isTitleValid && isDescriptionValid) || !isTopicSelected
+                ? addNewNote()
+                : null
             }
             disabled={!isTitleValid || !isDescriptionValid || !isTopicSelected}
           >

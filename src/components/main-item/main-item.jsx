@@ -80,48 +80,52 @@ const StyledDiv = styled.div`
   margin-left: 5px;
 `;
 
-function MainItem({ noteItems, onToggle, doneState, handleDeleteTodo }) {
+function MainItem({ visibleItems, onToggle, doneState, handleDeleteTodo }) {
   const [showPopover, setShowPopover] = useState(false);
 
   const onToggleShowPopover = (index) => {
     setShowPopover(index === showPopover ? null : index);
   };
 
-
   return (
     <>
-      {noteItems.map((item, index) => (
-        <Note key={item.id}>
-          <Title>
-            <H2 $done={doneState[index]}>{item.title}</H2>
-            <DivMore onClick={() => onToggleShowPopover(index)}>
-              <Span>...</Span>
-            </DivMore>
-          </Title>
-          {showPopover === index ? <Popover handleDeleteTodo={() => {
-            handleDeleteTodo(index)
-            setShowPopover(null)
-          }} /> : null}
-          <P $done={doneState[index]}>{item.description}</P>
-          <Theme>
-            <ColorsTopics>
-              {item.topics.map((topic, index) => {
-                const contextTopic = topics[topic];
-                return (
-                  <StyledDiv
-                    key={index}
-                    color={contextTopic ? contextTopic : topic}
-                  ></StyledDiv>
-                );
-              })}
-            </ColorsTopics>
-            <Label>
-              <Checkbox onClick={() => onToggle(index)} />
-              Done
-            </Label>
-          </Theme>
-        </Note>
-      ))}
+      {visibleItems.map((item) => (
+          <Note key={item.index}>
+            <Title>
+              <H2 $done={doneState[item.index]}>{item.title}</H2>
+              <DivMore onClick={() => onToggleShowPopover(item.index)}>
+                <Span>...</Span>
+              </DivMore>
+            </Title>
+            {showPopover === item.index ? (
+              <Popover
+                handleDeleteTodo={() => {
+                  handleDeleteTodo(item.index);
+                  setShowPopover(null);
+                }}
+              />
+            ) : null}
+            <P $done={doneState[item.index]}>{item.description}</P>
+            <Theme>
+              <ColorsTopics>
+                {item.topics.map((topic, index) => {
+                  const contextTopic = topics[topic];
+                  return (
+                    <StyledDiv
+                      key={index}
+                      color={contextTopic ? contextTopic : topic}
+                    ></StyledDiv>
+                  );
+                })}
+              </ColorsTopics>
+              <Label>
+                <Checkbox onClick={() => onToggle(item.index)} />
+                Done
+              </Label>
+            </Theme>
+          </Note>
+        )
+      )}
     </>
   );
 }

@@ -52,6 +52,7 @@ function Aside({ onChange, doneState, todoState }) {
 
     setCompleteCounter(completed);
     setUncompleteCounter(uncompleted);
+
   }, [doneState, todoState]);
 
   const onToggleTopic = (topic) => {
