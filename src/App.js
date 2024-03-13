@@ -57,6 +57,7 @@ function App() {
     Array.from({ length: visibleItems.length }, () => false)
   );
   const [showModalState, setShowModalState] = useState(false);
+  const [hideDoneTasks, setHideDoneTasks] = useState(false);
 
   const addNewTodo = (newTodo) => {
     const newId = `ID${randomId()}`;
@@ -110,9 +111,17 @@ function App() {
     } else {
       setVisibleItems((prevVisibleItems) =>
         prevVisibleItems.filter((item) =>
-        item.topics.some((value) => topicsList.includes(value))
-      ));
+          item.topics.some((value) => topicsList.includes(value))
+        )
+      );
     }
+  };
+
+  const toggleHideDoneTasks = () => {
+    setHideDoneTasks(!hideDoneTasks);
+    setVisibleItems((prevVisibleItems) => {
+      return !hideDoneTasks ? prevVisibleItems.filter((item, index) => !doneStates[index]) : todoVisible.map((id) => todoState[id]);
+    });
   };
 
   const onToggleShowModal = () => {
@@ -125,7 +134,12 @@ function App() {
       {showModalState ? (
         <AddTodoModal onToggleShow={onToggleShowModal} onSubmit={addNewTodo} />
       ) : null}
-      <Aside onChange={onChange} doneState={doneStates} todoState={todoState} />
+      <Aside
+        onChange={onChange}
+        doneState={doneStates}
+        todoState={todoState}
+        toggleHideDoneTasks={toggleHideDoneTasks}
+      />
       <MainDiv>
         <MainItem
           visibleItems={visibleItems}

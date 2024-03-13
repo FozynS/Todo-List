@@ -28,18 +28,18 @@ const AsideDiv = styled.aside`
   height: 50%;
 `;
 
-function HideDoneTasks() {
+function HideDoneTasks({toggleHideDoneTasks}) {
   return (
     <HideDiv>
       <Label>
-        <Checkbox/>
+        <Checkbox onClick={toggleHideDoneTasks}/>
         Hide Done Task
       </Label>
     </HideDiv>
   );
 }
 
-function Aside({ onChange, doneState, todoState }) {
+function Aside({ onChange, doneState, todoState, toggleHideDoneTasks }) {
   const [activeState, setActiveState] = useState([]);
   const [completeCounter, setCompleteCounter] = useState(0);
   const [uncompleteCounter, setUncompleteCounter] = useState(0);
@@ -78,7 +78,7 @@ function Aside({ onChange, doneState, todoState }) {
           active={activeState.includes(topic)}
         />
       ))}
-      <HideDoneTasks />
+      <HideDoneTasks toggleHideDoneTasks={toggleHideDoneTasks}/>
       {/* onClick={filter.todoState[index]===doneState[index] ? Hide : show} */}
       <div>
         <h2>Completed:{completeCounter}</h2>
