@@ -1,7 +1,7 @@
 import Header from "./components/header/header";
 import Aside from "./components/aside/aside";
 import AddTodoModal from "./components/add-todo-modal/add-todo-modal";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import styled from "styled-components";
 import MainItem from "./components/main-item/main-item";
 import randomId from "./lib/get-random-value";
@@ -40,7 +40,7 @@ const noteItemsMap = noteItems.reduce((result, currentItem) => {
 function App() {
   const [todoState, setTodoState] = useState(noteItemsMap);
   const [todoVisible, setTodoVisible] = useState(Object.keys(todoState));
-  const [doneStates, setDoneState] = useState([]);
+  const [doneState, setDoneState] = useState([]);
   const [showModalState, setShowModalState] = useState(false);
   const [hideDoneTasks, setHideDoneTasks] = useState(true);
 
@@ -59,14 +59,13 @@ function App() {
     });
 
     setTodoVisible((prevTodoVisible) => [...prevTodoVisible, newId]);
-    // setDoneState((prevDoneStates) => [...prevDoneStates, false]);
   };
 
-  const toggleDone = (id) => {
+  const toggleDone = (idToToggle) => {
     setDoneState((prevStates) => {
-      const newStates = { ...prevStates };
-      newStates[id] = !newStates[id];
-      return newStates;
+      return prevStates.includes(idToToggle)
+        ? prevStates.filter((id) => id !== idToToggle)
+        : prevStates.concat(idToToggle);
     });
   };
 
@@ -78,15 +77,11 @@ function App() {
     });
 
     setTodoVisible((prevTodoState) => {
-      return prevTodoState.filter(
-        (_, index) => todoVisible[index] !== idToDelete
-      );
+      return prevTodoState.filter((id) => todoVisible[id] !== idToDelete);
     });
 
     setDoneState((prevDoneStates) => {
-      const updatedDoneState = { ...prevDoneStates };
-      delete updatedDoneState[idToDelete];
-      return updatedDoneState;
+      return prevDoneStates.filter((id) => todoVisible[id] !== idToDelete);
     });
   };
 
@@ -103,11 +98,11 @@ function App() {
 
   const toggleHideDoneTasks = () => {
     setHideDoneTasks(!hideDoneTasks);
-
     setTodoVisible(() => {
       const allTodos = Object.keys(todoState);
+      console.log(doneState);
       return hideDoneTasks
-        ? allTodos.filter((itemId) => !doneStates[itemId])
+        ? allTodos.filter((itemId) => !doneState.includes(itemId))
         : allTodos;
     });
   };
@@ -124,15 +119,15 @@ function App() {
       ) : null}
       <Aside
         onChange={onChange}
-        doneState={doneStates}
-        todoState={todoState}
+        completeCount={doneState.length}
+        uncompleteCount={Object.keys(todoState).length - doneState.length}
         toggleHideDoneTasks={toggleHideDoneTasks}
       />
       <MainDiv>
         <MainItem
           visibleItems={visibleItems}
           onToggle={toggleDone}
-          doneState={doneStates}
+          doneState={doneState}
           handleDeleteTodo={handleDeleteTodo}
         />
       </MainDiv>

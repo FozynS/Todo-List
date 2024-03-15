@@ -14,27 +14,8 @@ function HideDoneTasks({toggleHideDoneTasks}) {
   );
 }
 
-function Aside({ onChange, doneState, todoState, toggleHideDoneTasks }) {
+function Aside({ onChange, completeCount, uncompleteCount, toggleHideDoneTasks }) {
   const [activeState, setActiveState] = useState([]);
-  const [completeCounter, setCompleteCounter] = useState(0);
-  const [uncompleteCounter, setUncompleteCounter] = useState(0);
-
-  useEffect(() => {
-    let completed = 0;
-    let uncompleted = 0;
-
-    Object.values(doneState).forEach((isDone) => {
-      if (isDone) {
-        completed++;
-      } else {
-        uncompleted++;
-      }
-    });
-
-    setCompleteCounter(completed);
-    setUncompleteCounter(uncompleted);
-
-  }, [doneState, todoState]);
 
   const onToggleTopic = (topic) => {
     setActiveState((prevState) => {
@@ -61,8 +42,8 @@ function Aside({ onChange, doneState, todoState, toggleHideDoneTasks }) {
       ))}
       <HideDoneTasks toggleHideDoneTasks={toggleHideDoneTasks}/>
       <div>
-        <h2>Completed:{completeCounter}</h2>
-        <h2>Uncompleted:{uncompleteCounter}</h2>
+        <h2>Completed:{completeCount}</h2>
+        <h2>Uncompleted:{uncompleteCount}</h2>
       </div>
     </AsideDiv>
   );

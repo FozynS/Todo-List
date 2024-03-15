@@ -6,7 +6,7 @@ import Popover from "../popover-menu/popover";
 function MainItem({ visibleItems, onToggle, doneState, handleDeleteTodo }) {
   const [showPopover, setShowPopover] = useState(false);
 
-  const onToggleShowPopover = (id) => {
+  const onToggleShowPopover = (id) => { 
     setShowPopover(id === showPopover ? null : id);
   };
 
@@ -15,7 +15,7 @@ function MainItem({ visibleItems, onToggle, doneState, handleDeleteTodo }) {
       {visibleItems.map((item) => (
         <Note key={item.id}>
           <Title>
-            <H2 $done={doneState[item.id]}>{item.title}</H2>
+            <H2 $done={doneState.includes(item.id)}>{item.title}</H2>
             <DivMore onClick={() => onToggleShowPopover(item.id)}>
               <Span>...</Span>
             </DivMore>
@@ -28,7 +28,7 @@ function MainItem({ visibleItems, onToggle, doneState, handleDeleteTodo }) {
               }}
             />
           ) : null}
-          <P $done={doneState[item.id]}>{item.description}</P>
+          <P $done={doneState.includes(item.id)}>{item.description}</P>
           <Theme>
             <ColorsTopics>
               {item.topics.map((topic, index) => {
@@ -44,7 +44,7 @@ function MainItem({ visibleItems, onToggle, doneState, handleDeleteTodo }) {
             <Label>
               <Checkbox
                 onClick={() => onToggle(item.id)}
-                defaultChecked={doneState[item.id]}
+                defaultChecked={doneState.includes(item.id)}
               />
               Done
             </Label>
