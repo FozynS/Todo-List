@@ -3,31 +3,6 @@ import styled from "styled-components";
 import topics from "../Topics/Topics";
 import { useEffect, useState } from "react";
 
-const HideDiv = styled.div`
-  display: flex;
-  gap: 10px;
-  align-items: center;
-`;
-
-const Label = styled.label`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px;
-`;
-
-const Checkbox = styled.input.attrs({ type: "checkbox" })`
-  width: 25px;
-  height: 25px;
-`;
-const AsideDiv = styled.aside`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  width: 15%;
-  height: 50%;
-`;
-
 function HideDoneTasks({toggleHideDoneTasks}) {
   return (
     <HideDiv>
@@ -48,7 +23,13 @@ function Aside({ onChange, doneState, todoState, toggleHideDoneTasks }) {
     let completed = 0;
     let uncompleted = 0;
 
-    doneState.forEach((item) => (!item ? uncompleted++ : completed++));
+    Object.values(doneState).forEach((isDone) => {
+      if (isDone) {
+        completed++;
+      } else {
+        uncompleted++;
+      }
+    });
 
     setCompleteCounter(completed);
     setUncompleteCounter(uncompleted);
@@ -79,7 +60,6 @@ function Aside({ onChange, doneState, todoState, toggleHideDoneTasks }) {
         />
       ))}
       <HideDoneTasks toggleHideDoneTasks={toggleHideDoneTasks}/>
-      {/* onClick={filter.todoState[index]===doneState[index] ? Hide : show} */}
       <div>
         <h2>Completed:{completeCounter}</h2>
         <h2>Uncompleted:{uncompleteCounter}</h2>
@@ -87,5 +67,29 @@ function Aside({ onChange, doneState, todoState, toggleHideDoneTasks }) {
     </AsideDiv>
   );
 }
-
 export default Aside;
+
+const HideDiv = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+`;
+
+const Label = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+`;
+
+const Checkbox = styled.input.attrs({ type: "checkbox" })`
+  width: 25px;
+  height: 25px;
+`;
+const AsideDiv = styled.aside`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 15%;
+  height: 50%;
+`;

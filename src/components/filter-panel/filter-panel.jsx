@@ -1,5 +1,16 @@
 import styled from "styled-components";
 
+function FilterPanel({ text, color, onClick, active }) {
+
+  return (
+    <ContainerDiv $active={active} onClick={onClick}>
+      <StyledDiv color={color}></StyledDiv>
+      <p>{text}</p>
+    </ContainerDiv>
+  );
+}
+export default FilterPanel;
+
 const ContainerDiv = styled.div`
   cursor: pointer;
   display: flex;
@@ -21,15 +32,3 @@ const StyledDiv = styled.div`
   height: 35px;
   margin-left: 5px;
 `;
-
-function FilterPanel({ text, color, onClick, active }) {
-
-  return (
-    <ContainerDiv $active={active} onClick={onClick}>
-      <StyledDiv color={color}></StyledDiv>
-      <p>{text}</p>
-    </ContainerDiv>
-  );
-}
-
-export default FilterPanel;

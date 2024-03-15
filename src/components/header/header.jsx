@@ -1,5 +1,15 @@
-// import { useState } from "react";
 import styled from "styled-components";
+
+function Header({onToggleShow}) {
+
+  return (
+    <HeaderDiv>
+      <H1>todo</H1>
+      <Button onClick={onToggleShow}>+</Button>
+    </HeaderDiv>
+  );
+}
+export default Header;
 
 const HeaderDiv = styled.header`
   display: flex;
@@ -22,15 +32,3 @@ const Button = styled.button`
     transform: scale(0.7);
   }
 `;
-
-function Header({onToggleShow}) {
-
-  return (
-    <HeaderDiv>
-      <H1>todo</H1>
-      <Button onClick={onToggleShow}>+</Button>
-    </HeaderDiv>
-  );
-}
-
-export default Header;

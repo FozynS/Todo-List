@@ -1,63 +1,52 @@
 import Header from "./components/header/header";
 import Aside from "./components/aside/aside";
 import AddTodoModal from "./components/add-todo-modal/add-todo-modal";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import MainItem from "./components/main-item/main-item";
+import randomId from "./lib/get-random-value";
 
-const MainDiv = styled.main`
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  width: 80%;
-  height: 100%;
-  margin-left: 50px;
-  gap: 20px;
-`;
-
-const randomId = () => {
-  return Math.floor(Math.random() * 1000);
-};
-let index = 0;
-const noteItems = {
-  [`ID${randomId()}`]: {
+const noteItems = [
+  {
     title: "The first task title",
     description:
       "Lorem ipsum. dolor sit amet, consectetur adipisicing elit. Illum neque nisi dolore facere iste minima atque veniam excepturi aut consequatur dolorum veritatis error nemo id placeat, minus odio delectus eius.",
     topics: ["work", "study", "entertainment"],
-    index: index++,
+    id: `ID${randomId()}`,
   },
 
-  [`ID${randomId()}`]: {
+  {
     title: "The second task title",
     description:
       "Lorem ipsum. dolor sit amet, consectetur adipisicing elit. Illum neque nisi dolore facere iste minima atque veniam excepturi aut consequatur dolorum veritatis error nemo id placeat, minus odio delectus eius. Lorem ipsum. dolor sit amet consectetur adipisicing elit.",
     topics: ["entertainment", "family", "work"],
-    index: index++,
+    id: `ID${randomId()}`,
   },
 
-  [`ID${randomId()}`]: {
+  {
     title: "The third task title",
     description:
       "Illum neque nisi dolore facere iste minima atque veniam excepturi aut consequatur dolorum veritatis error nemo id placeat, minus odio delectus eius.",
     topics: ["study", "family"],
-    index: index++,
+    id: `ID${randomId()}`,
   },
-};
+];
+
+const noteItemsMap = noteItems.reduce((result, currentItem) => {
+  result[currentItem.id] = currentItem;
+  return result;
+}, {});
 
 function App() {
-  const [todoState, setTodoState] = useState(noteItems);
-
+  const [todoState, setTodoState] = useState(noteItemsMap);
   const [todoVisible, setTodoVisible] = useState(Object.keys(todoState));
-  const [visibleItems, setVisibleItems] = useState(
-    todoVisible.map((id) => todoState[id])
-  );
-
-  const [doneStates, setDoneState] = useState(
-    Array.from({ length: visibleItems.length }, () => false)
-  );
+  const [doneStates, setDoneState] = useState([]);
   const [showModalState, setShowModalState] = useState(false);
-  const [hideDoneTasks, setHideDoneTasks] = useState(false);
+  const [hideDoneTasks, setHideDoneTasks] = useState(true);
+
+  const visibleItems = useMemo(() => {
+    return todoVisible.map((id) => todoState[id]);
+  }, [todoVisible, todoState]);
 
   const addNewTodo = (newTodo) => {
     const newId = `ID${randomId()}`;
@@ -65,62 +54,61 @@ function App() {
     setTodoState((prevTodoState) => {
       return {
         ...prevTodoState,
-        [newId]: { ...newTodo, index: index++ },
+        [newId]: { ...newTodo, id: newId },
       };
     });
 
     setTodoVisible((prevTodoVisible) => [...prevTodoVisible, newId]);
-    setVisibleItems((prevVisibleItems) => [
-      ...prevVisibleItems,
-      { ...newTodo, index: index++ },
-    ]);
-    setDoneState((prevDoneStates) => [...prevDoneStates, false]);
+    // setDoneState((prevDoneStates) => [...prevDoneStates, false]);
   };
 
-  const toggleDone = (index) => {
+  const toggleDone = (id) => {
     setDoneState((prevStates) => {
-      const newStates = [...prevStates];
-      newStates[index] = !newStates[index];
+      const newStates = { ...prevStates };
+      newStates[id] = !newStates[id];
       return newStates;
     });
   };
 
-  const handleDeleteTodo = (indexToDelete) => {
+  const handleDeleteTodo = (idToDelete) => {
     setTodoState((prevTodoState) => {
       const updatedTodoState = { ...prevTodoState };
-      delete updatedTodoState[todoVisible[indexToDelete]];
+      delete updatedTodoState[idToDelete];
       return updatedTodoState;
     });
+
     setTodoVisible((prevTodoState) => {
       return prevTodoState.filter(
-        (_, index) => todoVisible[index] !== todoVisible[indexToDelete]
+        (_, index) => todoVisible[index] !== idToDelete
       );
-    });
-    setVisibleItems((prevVisibleItems) => {
-      return prevVisibleItems.filter((item) => item.index !== indexToDelete);
     });
 
     setDoneState((prevDoneStates) => {
-      return prevDoneStates.slice(1);
+      const updatedDoneState = { ...prevDoneStates };
+      delete updatedDoneState[idToDelete];
+      return updatedDoneState;
     });
   };
 
   const onChange = (topicsList) => {
-    if (!topicsList.length) {
-      setVisibleItems(Object.values(todoState));
-    } else {
-      setVisibleItems((prevVisibleItems) =>
-        prevVisibleItems.filter((item) =>
-          item.topics.some((value) => topicsList.includes(value))
-        )
-      );
-    }
+    setTodoVisible(() => {
+      const allTodos = Object.keys(todoState);
+      return topicsList.length
+        ? allTodos.filter((id) =>
+            todoState[id].topics.some((value) => topicsList.includes(value))
+          )
+        : allTodos;
+    });
   };
 
   const toggleHideDoneTasks = () => {
     setHideDoneTasks(!hideDoneTasks);
-    setVisibleItems((prevVisibleItems) => {
-      return !hideDoneTasks ? prevVisibleItems.filter((item, index) => !doneStates[index]) : todoVisible.map((id) => todoState[id]);
+
+    setTodoVisible(() => {
+      const allTodos = Object.keys(todoState);
+      return hideDoneTasks
+        ? allTodos.filter((itemId) => !doneStates[itemId])
+        : allTodos;
     });
   };
 
@@ -153,3 +141,13 @@ function App() {
 }
 
 export default App;
+
+const MainDiv = styled.main`
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  width: 80%;
+  height: 100%;
+  margin-left: 50px;
+  gap: 20px;
+`;

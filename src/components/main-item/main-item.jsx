@@ -1,7 +1,60 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import topics from "../Topics/Topics";
-import Popover from "../popoverMenu/popover";
+import Popover from "../popover-menu/popover";
+
+function MainItem({ visibleItems, onToggle, doneState, handleDeleteTodo }) {
+  const [showPopover, setShowPopover] = useState(false);
+
+  const onToggleShowPopover = (id) => {
+    setShowPopover(id === showPopover ? null : id);
+  };
+
+  return (
+    <>
+      {visibleItems.map((item) => (
+        <Note key={item.id}>
+          <Title>
+            <H2 $done={doneState[item.id]}>{item.title}</H2>
+            <DivMore onClick={() => onToggleShowPopover(item.id)}>
+              <Span>...</Span>
+            </DivMore>
+          </Title>
+          {showPopover === item.id ? (
+            <Popover
+              handleDeleteTodo={() => {
+                handleDeleteTodo(item.id);
+                setShowPopover(null);
+              }}
+            />
+          ) : null}
+          <P $done={doneState[item.id]}>{item.description}</P>
+          <Theme>
+            <ColorsTopics>
+              {item.topics.map((topic, index) => {
+                const contextTopic = topics[topic];
+                return (
+                  <StyledDiv
+                    key={index}
+                    color={contextTopic ? contextTopic : topic}
+                  ></StyledDiv>
+                );
+              })}
+            </ColorsTopics>
+            <Label>
+              <Checkbox
+                onClick={() => onToggle(item.id)}
+                defaultChecked={doneState[item.id]}
+              />
+              Done
+            </Label>
+          </Theme>
+        </Note>
+      ))}
+    </>
+  );
+}
+export default MainItem;
 
 const Note = styled.div`
   position: relative;
@@ -79,55 +132,3 @@ const StyledDiv = styled.div`
   height: 35px;
   margin-left: 5px;
 `;
-
-function MainItem({ visibleItems, onToggle, doneState, handleDeleteTodo }) {
-  const [showPopover, setShowPopover] = useState(false);
-
-  const onToggleShowPopover = (index) => {
-    setShowPopover(index === showPopover ? null : index);
-  };
-
-  return (
-    <>
-      {visibleItems.map((item) => (
-          <Note key={item.index}>
-            <Title>
-              <H2 $done={doneState[item.index]}>{item.title}</H2>
-              <DivMore onClick={() => onToggleShowPopover(item.index)}>
-                <Span>...</Span>
-              </DivMore>
-            </Title>
-            {showPopover === item.index ? (
-              <Popover
-                handleDeleteTodo={() => {
-                  handleDeleteTodo(item.index);
-                  setShowPopover(null);
-                }}
-              />
-            ) : null}
-            <P $done={doneState[item.index]}>{item.description}</P>
-            <Theme>
-              <ColorsTopics>
-                {item.topics.map((topic, index) => {
-                  const contextTopic = topics[topic];
-                  return (
-                    <StyledDiv
-                      key={index}
-                      color={contextTopic ? contextTopic : topic}
-                    ></StyledDiv>
-                  );
-                })}
-              </ColorsTopics>
-              <Label>
-                <Checkbox onClick={() => onToggle(item.index)} />
-                Done
-              </Label>
-            </Theme>
-          </Note>
-        )
-      )}
-    </>
-  );
-}
-
-export default MainItem;

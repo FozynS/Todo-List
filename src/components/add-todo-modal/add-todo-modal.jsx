@@ -2,6 +2,107 @@ import styled from "styled-components";
 import topics from "../Topics/Topics";
 import { useState } from "react";
 
+function ModalDialog({ onToggleShow, onSubmit }) {
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [selectState, setSelectState] = useState([]);
+  const [isTitleValid, setIsTitleValid] = useState(false);
+  const [isDescriptionValid, setIsDescriptionValid] = useState(false);
+  const [isTopicSelected, setIsTopicSelected] = useState(false);
+
+  const handleTitleChange = (e) => {
+    const { value } = e.target;
+    setTitle(value);
+    setIsTitleValid(value.length >= 5);
+  };
+
+  const handleDescriptionChange = (e) => {
+    const { value } = e.target;
+    setDescription(value);
+    setIsDescriptionValid(value.length >= 10);
+  };
+
+  const toggleSelect = (topicName) => {
+    setSelectState((prevState) => {
+      const newState = prevState.includes(topicName)
+        ? prevState.filter((item) => item !== topicName)
+        : prevState.concat(topicName);
+
+      setIsTopicSelected(newState.length > 0);
+      return newState;
+    });
+  };
+
+  const addNewNote = () => {
+    if (!isTopicSelected) {
+      return null;
+    } else {
+      const newNote = {
+        title,
+        description,
+        topics: selectState,
+      };
+
+      onToggleShow();
+      onSubmit(newNote);
+    }
+  };
+
+  return (
+    <ShadowDiv>
+      <ModalDiv>
+        <BtnsDiv>
+          <CancelBtn onClick={onToggleShow}>Cancel</CancelBtn>
+          <AddBtn
+            onClick={() =>
+              (isTitleValid && isDescriptionValid) || !isTopicSelected
+                ? addNewNote()
+                : null
+            }
+            disabled={!isTitleValid || !isDescriptionValid || !isTopicSelected}
+          >
+            Add
+          </AddBtn>
+        </BtnsDiv>
+        <div>
+          <h2>Title</h2>
+          <InputTitle
+            type="text"
+            placeholder="add a title..."
+            value={title}
+            onChange={handleTitleChange}
+            $valid={isTitleValid}
+          />
+          <h2>Description</h2>
+          <InputDescription
+            type="text"
+            placeholder="add a description..."
+            value={description}
+            onChange={handleDescriptionChange}
+            $valid={isDescriptionValid}
+          />
+        </div>
+        <div>
+          <h2>Tags</h2>
+          <TopicsWrapper>
+            {Object.keys(topics).map((topic) => (
+              <Topics
+                key={topic}
+                $select={selectState.indexOf(topic) > -1}
+                onClick={() => toggleSelect(topic)}
+              >
+                <StyledDiv color={topics[topic]} />
+                <p>{topic}</p>
+              </Topics>
+            ))}
+          </TopicsWrapper>
+        </div>
+      </ModalDiv>
+    </ShadowDiv>
+  );
+}
+export default ModalDialog;
+
 const ShadowDiv = styled.div`
   position: fixed;
   top: 0;
@@ -112,105 +213,3 @@ const StyledDiv = styled.div`
   height: 35px;
   margin-left: 5px;
 `;
-
-function ModalDialog({ onToggleShow, onSubmit }) {
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [selectState, setSelectState] = useState([]);
-  const [isTitleValid, setIsTitleValid] = useState(false);
-  const [isDescriptionValid, setIsDescriptionValid] = useState(false);
-  const [isTopicSelected, setIsTopicSelected] = useState(false);
-
-  const handleTitleChange = (e) => {
-    const { value } = e.target;
-    setTitle(value);
-    setIsTitleValid(value.length >= 5);
-  };
-
-  const handleDescriptionChange = (e) => {
-    const { value } = e.target;
-    setDescription(value);
-    setIsDescriptionValid(value.length >= 10);
-  };
-
-  const toggleSelect = (topicName) => {
-    setSelectState((prevState) => {
-      const newState = prevState.includes(topicName)
-        ? prevState.filter((item) => item !== topicName)
-        : prevState.concat(topicName);
-
-      setIsTopicSelected(newState.length > 0);
-      return newState;
-    });
-  };
-
-  const addNewNote = () => {
-    if (!isTopicSelected) {
-      return null;
-    } else {
-      const newNote = {
-        title,
-        description,
-        topics: selectState,
-      };
-
-      onToggleShow();
-      onSubmit(newNote);
-    }
-  };
-
-  return (
-    <ShadowDiv>
-      <ModalDiv>
-        <BtnsDiv>
-          <CancelBtn onClick={onToggleShow}>Cancel</CancelBtn>
-          <AddBtn
-            onClick={() =>
-              (isTitleValid && isDescriptionValid) || !isTopicSelected
-                ? addNewNote()
-                : null
-            }
-            disabled={!isTitleValid || !isDescriptionValid || !isTopicSelected}
-          >
-            Add
-          </AddBtn>
-        </BtnsDiv>
-        <div>
-          <h2>Title</h2>
-          <InputTitle
-            type="text"
-            placeholder="add a title..."
-            value={title}
-            onChange={handleTitleChange}
-            $valid={isTitleValid}
-          />
-          <h2>Description</h2>
-          <InputDescription
-            type="text"
-            placeholder="add a description..."
-            value={description}
-            onChange={handleDescriptionChange}
-            $valid={isDescriptionValid}
-          />
-        </div>
-        <div>
-          <h2>Tags</h2>
-          <TopicsWrapper>
-            {Object.keys(topics).map((topic) => (
-              <Topics
-                key={topic}
-                $select={selectState.indexOf(topic) > -1}
-                onClick={() => toggleSelect(topic)}
-              >
-                <StyledDiv color={topics[topic]} />
-                <p>{topic}</p>
-              </Topics>
-            ))}
-          </TopicsWrapper>
-        </div>
-      </ModalDiv>
-    </ShadowDiv>
-  );
-}
-
-export default ModalDialog;
