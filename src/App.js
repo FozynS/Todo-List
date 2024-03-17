@@ -100,7 +100,6 @@ function App() {
     setHideDoneTasks(!hideDoneTasks);
     setTodoVisible(() => {
       const allTodos = Object.keys(todoState);
-      console.log(doneState);
       return hideDoneTasks
         ? allTodos.filter((itemId) => !doneState.includes(itemId))
         : allTodos;
