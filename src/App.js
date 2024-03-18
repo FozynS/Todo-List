@@ -5,39 +5,44 @@ import { useMemo, useState } from "react";
 import styled from "styled-components";
 import MainItem from "./components/main-item/main-item";
 import randomId from "./lib/get-random-value";
-
-const noteItems = [
-  {
-    title: "The first task title",
-    description:
-      "Lorem ipsum. dolor sit amet, consectetur adipisicing elit. Illum neque nisi dolore facere iste minima atque veniam excepturi aut consequatur dolorum veritatis error nemo id placeat, minus odio delectus eius.",
-    topics: ["work", "study", "entertainment"],
-    id: `ID${randomId()}`,
-  },
-
-  {
-    title: "The second task title",
-    description:
-      "Lorem ipsum. dolor sit amet, consectetur adipisicing elit. Illum neque nisi dolore facere iste minima atque veniam excepturi aut consequatur dolorum veritatis error nemo id placeat, minus odio delectus eius. Lorem ipsum. dolor sit amet consectetur adipisicing elit.",
-    topics: ["entertainment", "family", "work"],
-    id: `ID${randomId()}`,
-  },
-
-  {
-    title: "The third task title",
-    description:
-      "Illum neque nisi dolore facere iste minima atque veniam excepturi aut consequatur dolorum veritatis error nemo id placeat, minus odio delectus eius.",
-    topics: ["study", "family"],
-    id: `ID${randomId()}`,
-  },
-];
-
-const noteItemsMap = noteItems.reduce((result, currentItem) => {
-  result[currentItem.id] = currentItem;
-  return result;
-}, {});
+import { addTodo, toggleDone, deleteTodo, toggleModal, toggleHideDoneTasks } from "./lib/reducers";
+import { useDispatch, useSelector } from "react-redux";
+import noteItemsMap from "./lib/noteItems";
 
 function App() {
+  /** 
+   * const dispatch = useDispatch();
+   * const todoState = useSelector(state => state.todoState);
+   * const todoVisible = useSelector(state => state.todoVisible);
+   * const doneState = useSelector(state => state.doneState);
+   * const showModalState = useSelector(state => state.showModalState);
+   * const hideDoneTasks = useSelector(state => state.hideDoneTasks);
+   * 
+   * ? const visibleItems = useMemo(() => {
+   * ?  return todoVisible.map((id) => todoState[id]);
+   * ? }, [todoVisible, todoState]);
+   * 
+   * const addNewTodo = (newTodo) => {
+   *  dispacth(addTodo(newTodo))    
+   * }
+   * const handleToggleDone = (idToToggle) => {
+   *  dispacth(toggleDone(idToToggle))    
+   * }
+   * const handleDeleteTodo = (idToDelete) => {
+   *  dispacth(deleteTodo(idToDelete))    
+   * }
+   * const handleToggleHideDoneTasks = () => {
+   *  dispacth(toggleHideDoneTasks())    
+   * }
+   * const onToggleShowModal = () => {
+   *  dispacth(toggleModal())    
+   * }
+   * 
+   * ? onChanage = () => {
+   * ? }
+   */
+  
+
   const [todoState, setTodoState] = useState(noteItemsMap);
   const [todoVisible, setTodoVisible] = useState(Object.keys(todoState));
   const [doneState, setDoneState] = useState([]);

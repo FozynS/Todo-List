@@ -1,10 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
+import randomId from "./get-random-value";
+import noteItemsMap from "./noteItems";
+
 
 const initialState = {
-  todoState: {},
+  todoState: {
+    noteItemsMap,
+  },
+  todoVisible: [],
   doneState: [],
   showModalState: false,
-  hideDoneTasks: true,
+  hideDoneTasks: true
 };
 
 const appSlice = createSlice({
@@ -12,28 +18,31 @@ const appSlice = createSlice({
   initialState,
   reducers: {
     addTodo: (state, action) => {
-      const id = action.payload;
-      console.log(state, id, action)
+      const newId = `ID${randomId()}`;
+      state.todoState[newId] = { ...action.payload, id: newId };
+      state.todoVisible.push(newId);
     },
     toggleDone: (state, action) => {
-      const id = action.payload;
-      console.log(state, id, action)
+      const idToToggle = action.payload;
+      state.doneState.includes(idToToggle)
+        ? state.doneState = state.doneState.filter(id => id !== idToToggle)
+        : state.doneState.push(idToToggle);
     },
     deleteTodo: (state, action) => {
-      const id = action.payload;
-      console.log(state, id, action)
+      const idToDelete = action.payload;
+      delete state.todoState[idToDelete];
+      state.todoVisible = state.todoVisible.filter(id => id !== idToDelete);
+      state.doneState = state.doneState.filter(id => id !== idToDelete);
     },
-    toggleModal: (state, action) => {
-      const id = action.payload;
-      console.log(state, id, action)
+    toggleModal: (state) => {
+      state.showModalState = !state.showModalState;
     },
-    toggleHideDoneTasks: (state, action) => {
-      const id = action.payload;
-      console.log(state, id, action)
+    toggleHideDoneTasks: (state) => {
+      state.hideDoneTasks = !state.hideDoneTasks;
     },
   }
 });
 
-export const { addTodo, toggleDone, deleteTodo, toggleModal, toggleHideDoneTasks } = appSlice.actions;
+export const { addTodo, toggleDone, deleteTodo, toggleModal, toggleHideDoneTasks, updateVisibleItems } = appSlice.actions;
 
 export default appSlice.reducer;
