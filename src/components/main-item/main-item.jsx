@@ -9,7 +9,7 @@ function MainItem({ visibleItems, onToggle, doneState, handleDeleteTodo }) {
   const onToggleShowPopover = (id) => { 
     setShowPopover(id === showPopover ? null : id);
   };
-
+  
   return (
     <>
       {visibleItems.map((item) => (

@@ -2,16 +2,13 @@ import { createSlice } from "@reduxjs/toolkit";
 import randomId from "./get-random-value";
 import noteItemsMap from "./noteItems";
 
-
 const initialState = {
-  todoState: {
-    noteItemsMap,
-  },
-  todoVisible: [],
+  todoState: noteItemsMap,
   doneState: [],
   showModalState: false,
-  hideDoneTasks: true
+  hideDoneTasks: true,
 };
+initialState.todoVisible = Object.keys(initialState.todoState);
 
 const appSlice = createSlice({
   name: "app",
@@ -25,24 +22,40 @@ const appSlice = createSlice({
     toggleDone: (state, action) => {
       const idToToggle = action.payload;
       state.doneState.includes(idToToggle)
-        ? state.doneState = state.doneState.filter(id => id !== idToToggle)
+        ? (state.doneState = state.doneState.filter((id) => id !== idToToggle))
         : state.doneState.push(idToToggle);
     },
     deleteTodo: (state, action) => {
       const idToDelete = action.payload;
       delete state.todoState[idToDelete];
-      state.todoVisible = state.todoVisible.filter(id => id !== idToDelete);
-      state.doneState = state.doneState.filter(id => id !== idToDelete);
+      state.todoVisible = state.todoVisible.filter((id) => id !== idToDelete);
+      state.doneState = state.doneState.filter((id) => id !== idToDelete);
     },
     toggleModal: (state) => {
       state.showModalState = !state.showModalState;
     },
     toggleHideDoneTasks: (state) => {
       state.hideDoneTasks = !state.hideDoneTasks;
+      const allTodos = Object.keys(state.todoState);
+      state.todoVisible = !state.hideDoneTasks ? allTodos.filter((itemId) => !state.doneState.includes(itemId)) : allTodos;
     },
-  }
+    filterByTopic: (state, action) => {
+      const allTodos = Object.keys(state.todoState);
+      const topicsList = action.payload;
+      state.todoVisible = topicsList.length 
+        ? allTodos.filter((id) => state.todoState[id].topics.some((value) => topicsList.includes(value))) 
+        : allTodos; 
+    },
+  },
 });
 
-export const { addTodo, toggleDone, deleteTodo, toggleModal, toggleHideDoneTasks, updateVisibleItems } = appSlice.actions;
+export const {
+  addTodo,
+  toggleDone,
+  deleteTodo,
+  toggleModal,
+  toggleHideDoneTasks,
+  filterByTopic,
+} = appSlice.actions;
 
 export default appSlice.reducer;

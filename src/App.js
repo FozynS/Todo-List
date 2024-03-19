@@ -1,119 +1,54 @@
 import Header from "./components/header/header";
 import Aside from "./components/aside/aside";
 import AddTodoModal from "./components/add-todo-modal/add-todo-modal";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import styled from "styled-components";
 import MainItem from "./components/main-item/main-item";
-import randomId from "./lib/get-random-value";
-import { addTodo, toggleDone, deleteTodo, toggleModal, toggleHideDoneTasks } from "./lib/reducers";
+import {
+  addTodo,
+  toggleDone,
+  deleteTodo,
+  toggleModal,
+  toggleHideDoneTasks,
+  filterByTopic,
+} from "./lib/reducers";
 import { useDispatch, useSelector } from "react-redux";
-import noteItemsMap from "./lib/noteItems";
 
 function App() {
-  /** 
-   * const dispatch = useDispatch();
-   * const todoState = useSelector(state => state.todoState);
-   * const todoVisible = useSelector(state => state.todoVisible);
-   * const doneState = useSelector(state => state.doneState);
-   * const showModalState = useSelector(state => state.showModalState);
-   * const hideDoneTasks = useSelector(state => state.hideDoneTasks);
-   * 
-   * ? const visibleItems = useMemo(() => {
-   * ?  return todoVisible.map((id) => todoState[id]);
-   * ? }, [todoVisible, todoState]);
-   * 
-   * const addNewTodo = (newTodo) => {
-   *  dispacth(addTodo(newTodo))    
-   * }
-   * const handleToggleDone = (idToToggle) => {
-   *  dispacth(toggleDone(idToToggle))    
-   * }
-   * const handleDeleteTodo = (idToDelete) => {
-   *  dispacth(deleteTodo(idToDelete))    
-   * }
-   * const handleToggleHideDoneTasks = () => {
-   *  dispacth(toggleHideDoneTasks())    
-   * }
-   * const onToggleShowModal = () => {
-   *  dispacth(toggleModal())    
-   * }
-   * 
-   * ? onChanage = () => {
-   * ? }
-   */
-  
-
-  const [todoState, setTodoState] = useState(noteItemsMap);
-  const [todoVisible, setTodoVisible] = useState(Object.keys(todoState));
-  const [doneState, setDoneState] = useState([]);
-  const [showModalState, setShowModalState] = useState(false);
-  const [hideDoneTasks, setHideDoneTasks] = useState(true);
+  const dispatch = useDispatch();
+  const todoState = useSelector(state => state.todoState);
+  const todoVisible = useSelector(state => state.todoVisible);
+  const doneState = useSelector(state => state.doneState);
+  const showModalState = useSelector(state => state.showModalState);
 
   const visibleItems = useMemo(() => {
     return todoVisible.map((id) => todoState[id]);
   }, [todoVisible, todoState]);
 
   const addNewTodo = (newTodo) => {
-    const newId = `ID${randomId()}`;
-
-    setTodoState((prevTodoState) => {
-      return {
-        ...prevTodoState,
-        [newId]: { ...newTodo, id: newId },
-      };
-    });
-
-    setTodoVisible((prevTodoVisible) => [...prevTodoVisible, newId]);
-  };
-
-  const toggleDone = (idToToggle) => {
-    setDoneState((prevStates) => {
-      return prevStates.includes(idToToggle)
-        ? prevStates.filter((id) => id !== idToToggle)
-        : prevStates.concat(idToToggle);
-    });
+    dispatch(addTodo(newTodo));
   };
 
   const handleDeleteTodo = (idToDelete) => {
-    setTodoState((prevTodoState) => {
-      const updatedTodoState = { ...prevTodoState };
-      delete updatedTodoState[idToDelete];
-      return updatedTodoState;
-    });
+    dispatch(deleteTodo(idToDelete));
+  };
 
-    setTodoVisible((prevTodoState) => {
-      return prevTodoState.filter((id) => todoVisible[id] !== idToDelete);
-    });
-
-    setDoneState((prevDoneStates) => {
-      return prevDoneStates.filter((id) => todoVisible[id] !== idToDelete);
-    });
+  const handleToggleDone = (idToToggle) => {
+    dispatch(toggleDone(idToToggle));
+  };
+  
+  const handleToggleHideDoneTasks = () => {
+    dispatch(toggleHideDoneTasks());
   };
 
   const onChange = (topicsList) => {
-    setTodoVisible(() => {
-      const allTodos = Object.keys(todoState);
-      return topicsList.length
-        ? allTodos.filter((id) =>
-            todoState[id].topics.some((value) => topicsList.includes(value))
-          )
-        : allTodos;
-    });
-  };
-
-  const toggleHideDoneTasks = () => {
-    setHideDoneTasks(!hideDoneTasks);
-    setTodoVisible(() => {
-      const allTodos = Object.keys(todoState);
-      return hideDoneTasks
-        ? allTodos.filter((itemId) => !doneState.includes(itemId))
-        : allTodos;
-    });
+    dispatch(filterByTopic(topicsList));
   };
 
   const onToggleShowModal = () => {
-    setShowModalState(!showModalState);
+    dispatch(toggleModal());
   };
+
 
   return (
     <>
@@ -125,12 +60,12 @@ function App() {
         onChange={onChange}
         completeCount={doneState.length}
         uncompleteCount={Object.keys(todoState).length - doneState.length}
-        toggleHideDoneTasks={toggleHideDoneTasks}
+        toggleHideDoneTasks={handleToggleHideDoneTasks}
       />
       <MainDiv>
         <MainItem
           visibleItems={visibleItems}
-          onToggle={toggleDone}
+          onToggle={handleToggleDone}
           doneState={doneState}
           handleDeleteTodo={handleDeleteTodo}
         />
