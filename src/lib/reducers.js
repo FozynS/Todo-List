@@ -10,7 +10,7 @@ const initialState = {
 };
 initialState.todoVisible = Object.keys(initialState.todoState);
 
-const appSlice = createSlice({
+const todoSlice = createSlice({
   name: "app",
   initialState,
   reducers: {
@@ -56,6 +56,6 @@ export const {
   toggleModal,
   toggleHideDoneTasks,
   filterByTopic,
-} = appSlice.actions;
+} = todoSlice.actions;
 
-export default appSlice.reducer;
+export default todoSlice.reducer;

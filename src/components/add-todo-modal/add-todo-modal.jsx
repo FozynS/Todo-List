@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import topics from "../Topics/Topics";
+import topics from "../topics/Topics";
 import { useState } from "react";
 
 function ModalDialog({ onToggleShow, onSubmit }) {

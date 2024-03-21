@@ -1,15 +1,15 @@
 import { useState } from "react";
 import styled from "styled-components";
-import topics from "../Topics/Topics";
+import topics from "../topics/Topics";
 import Popover from "../popover-menu/popover";
 
 function MainItem({ visibleItems, onToggle, doneState, handleDeleteTodo }) {
   const [showPopover, setShowPopover] = useState(false);
 
-  const onToggleShowPopover = (id) => { 
+  const onToggleShowPopover = (id) => {
     setShowPopover(id === showPopover ? null : id);
   };
-  
+
   return (
     <>
       {visibleItems.map((item) => (

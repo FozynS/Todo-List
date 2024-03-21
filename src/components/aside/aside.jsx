@@ -1,20 +1,25 @@
 import FilterPanel from "../filter-panel/filter-panel";
 import styled from "styled-components";
-import topics from "../Topics/Topics";
+import topics from "../topics/topics";
 import { useEffect, useState } from "react";
 
-function HideDoneTasks({toggleHideDoneTasks}) {
+function HideDoneTasks({ toggleHideDoneTasks }) {
   return (
     <HideDiv>
       <Label>
-        <Checkbox onClick={toggleHideDoneTasks}/>
+        <Checkbox onClick={toggleHideDoneTasks} />
         Hide Done Task
       </Label>
     </HideDiv>
   );
 }
 
-function Aside({ onChange, completeCount, uncompleteCount, toggleHideDoneTasks }) {
+function Aside({
+  onChange,
+  completeCount,
+  uncompleteCount,
+  toggleHideDoneTasks,
+}) {
   const [activeState, setActiveState] = useState([]);
 
   const onToggleTopic = (topic) => {
@@ -40,7 +45,7 @@ function Aside({ onChange, completeCount, uncompleteCount, toggleHideDoneTasks }
           active={activeState.includes(topic)}
         />
       ))}
-      <HideDoneTasks toggleHideDoneTasks={toggleHideDoneTasks}/>
+      <HideDoneTasks toggleHideDoneTasks={toggleHideDoneTasks} />
       <div>
         <h2>Completed:{completeCount}</h2>
         <h2>Uncompleted:{uncompleteCount}</h2>
