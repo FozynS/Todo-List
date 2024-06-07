@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import topics from "../topics/Topics";
+import Topics from "../topics/topics";
 import Popover from "../popover-menu/popover";
 
 function MainItem({ visibleItems, onToggle, doneState, handleDeleteTodo }) {
@@ -32,7 +32,7 @@ function MainItem({ visibleItems, onToggle, doneState, handleDeleteTodo }) {
           <Theme>
             <ColorsTopics>
               {item.topics.map((topic, index) => {
-                const contextTopic = topics[topic];
+                const contextTopic = Topics[topic];
                 return (
                   <StyledDiv
                     key={index}

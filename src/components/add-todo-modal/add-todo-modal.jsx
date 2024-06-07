@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import topics from "../topics/Topics";
+import Topics from "../topics/topics";
 import { useState } from "react";
 
 function ModalDialog({ onToggleShow, onSubmit }) {
@@ -85,15 +85,15 @@ function ModalDialog({ onToggleShow, onSubmit }) {
         <div>
           <h2>Tags</h2>
           <TopicsWrapper>
-            {Object.keys(topics).map((topic) => (
-              <Topics
+            {Object.keys(Topics).map((topic) => (
+              <TopicsDiv
                 key={topic}
                 $select={selectState.indexOf(topic) > -1}
                 onClick={() => toggleSelect(topic)}
               >
-                <StyledDiv color={topics[topic]} />
+                <StyledDiv color={Topics[topic]} />
                 <p>{topic}</p>
-              </Topics>
+              </TopicsDiv>
             ))}
           </TopicsWrapper>
         </div>
@@ -189,7 +189,7 @@ const TopicsWrapper = styled.div`
   gap: 30px;
 `;
 
-const Topics = styled.div`
+const TopicsDiv = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
